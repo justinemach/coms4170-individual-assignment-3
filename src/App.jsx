@@ -1,0 +1,81 @@
+// Part 7 finished.
+// App owns the state and the header. Routes picks a page from the address:
+// / is Events, /events/:id is one event, /my-events is My Events, anything else is Not Found.
+
+import { Routes, Route, Link, NavLink } from "react-router-dom";
+import EventsPage from "./pages/EventsPage.jsx";
+import EventDetails from "./pages/EventDetails.jsx";
+import MyEvents from "./pages/MyEvents.jsx";
+import NotFound from "./pages/NotFound.jsx";
+import { useState } from "react";
+import { events as startingEvents } from "./data/events.js";
+
+export default function App() {
+  // The working copy of the events. Changing it redraws every component that shows it.
+  const [events, setEvents] = useState(startingEvents);
+  const [view, setView] = useState("upcoming");
+
+  // Copy, then set. A new array, with a new object for the one event that changed.
+  // The original array and object are never edited. The id never changes.
+  function handleStatusChange(id, newStatus) {
+    const nextEvents = events.map((event) => {
+      if (event.id === id) {
+        return { ...event, status: newStatus };
+      }
+      return event;
+    });
+    setEvents(nextEvents);
+  }
+
+  // NavLink calls this with isActive, so the current page's link gets the is-current style from Class 2.
+  function navClass({ isActive }) {
+    return isActive ? "events-nav-link is-current" : "events-nav-link";
+  }
+
+  // Only the events for the selected view are handed to the Events page.
+  const shownEvents = events.filter((event) => (view === "past" ? event.isPast : !event.isPast));
+
+  return (
+    <>
+      <a className="skip-link" href="#events-main">Skip to main content</a>
+
+      <header className="events-site-header">
+        <Link className="events-home-mark" to="/" aria-label="Events home">
+          <img src="https://raw.githubusercontent.com/silka-co/ui-design-course-assets/main/icons/star-four-fill.svg" alt="" />
+        </Link>
+        <nav className="events-primary-nav" aria-label="Primary navigation">
+          <NavLink className={navClass} to="/" end>
+            <img src="https://raw.githubusercontent.com/silka-co/ui-design-course-assets/main/icons/ticket.svg" width="18" height="18" alt="" aria-hidden="true" />
+            <span>Events</span>
+          </NavLink>
+          <NavLink className={navClass} to="/my-events">
+            <img src="https://raw.githubusercontent.com/silka-co/ui-design-course-assets/main/icons/calendar.svg" width="18" height="18" alt="" aria-hidden="true" />
+            <span>My Events</span>
+          </NavLink>
+          <a className="events-nav-link" href="#discover">
+            <img src="https://raw.githubusercontent.com/silka-co/ui-design-course-assets/main/icons/compass.svg" width="18" height="18" alt="" aria-hidden="true" />
+            <span>Discover</span>
+          </a>
+        </nav>
+
+        <nav className="events-account-nav" aria-label="Account navigation">
+          <time dateTime="2026-08-12T14:34:00-04:00">2:34 PM EDT</time>
+          <a href="#create-event">Create Event</a>
+          <a className="icon-link has-notification" href="#notifications" aria-label="Notifications">
+            <img src="https://raw.githubusercontent.com/silka-co/ui-design-course-assets/main/icons/bell.svg" alt="" />
+          </a>
+          <a className="profile-link" href="#profile" aria-label="Open profile">
+            <img src="https://raw.githubusercontent.com/silka-co/ui-design-course-assets/main/images/steel-silicon.avif" alt="" />
+          </a>
+        </nav>
+      </header>
+
+      <Routes>
+        <Route path="/" element={<EventsPage events={shownEvents} view={view} onViewChange={setView} onStatusChange={handleStatusChange} />} />
+        <Route path="/events/:id" element={<EventDetails events={events} onStatusChange={handleStatusChange} />} />
+        <Route path="/my-events" element={<MyEvents events={events} onStatusChange={handleStatusChange} />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
+  );
+}
