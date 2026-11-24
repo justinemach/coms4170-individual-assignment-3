@@ -2,6 +2,8 @@
 
 React/Vite implementation for COMS W4170, Fall 2026.
 
+Public project: https://github.com/justinemach/coms4170-individual-assignment-3
+
 ## Run
 
 ```sh

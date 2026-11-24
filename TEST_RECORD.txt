@@ -40,3 +40,10 @@ Source changes beyond supplied Part 11:
 - Decline and change-response transitions deliberately move focus.
 - Details data errors show recovery guidance instead of Not Found.
 - Removed logging of personal RSVP form values.
+
+FINAL PUBLICATION / REPRODUCIBILITY:
+- Public GitHub repository: https://github.com/justinemach/coms4170-individual-assignment-3
+- Anonymous HTTP access to the repository returned 200; anonymous raw App.jsx exactly matched the local source.
+- A clean npm ci with the supplied package-lock.json installed successfully; the locked Vite production build and scripts/check-behavior.mjs both passed.
+- Final browser console check returned no warnings/errors.
+- Both simulation flags are false.
