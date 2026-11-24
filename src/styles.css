@@ -1830,7 +1830,29 @@ body:has(.event-details) { background: var(--page); }
   .event-details { animation: none; }
 }
 
-/* Part 8: groups share the existing event-card styles. */
+/* Part 8 additions: My Events groups and the empty state. */
 .my-events-group { margin-top: 28px; }
 .my-events-group h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
 .empty-state { margin: 0; padding: 16px 18px; border: 1px dashed var(--line); border-radius: 12px; color: var(--secondary); }
+
+/* Part 9 additions: invalid fields and the small state label used while testing. */
+.field [aria-invalid="true"] { border-color: #9d3030; box-shadow: 0 0 0 2px rgba(157, 48, 48, .15); }
+.field input:disabled, .field select:disabled, .field textarea:disabled { background: #f3f3f3; color: var(--tertiary); }
+.primary-button:disabled, .secondary-button:disabled { opacity: .6; cursor: default; }
+.form-state { margin: 0; color: var(--tertiary); font-size: 12px; }
+
+/* Part 10 additions: the live region, shown as a slim status line when it has text. */
+.status-announcement { margin: 0; padding: 0 24px; min-height: 0; color: var(--secondary); font-size: 13px; }
+.status-announcement:empty { display: none; }
+h1:focus-visible, .rsvp-card:focus-visible, .form-error:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; border-radius: 6px; }
+
+/* Part 11 additions: loading and error states. */
+.load-state { margin: 24px 0; color: var(--secondary); }
+.load-error { margin: 24px 0; padding: 16px 18px; border: 1px solid #e3b3b3; border-radius: 12px; background: #fff6f6; display: grid; gap: 12px; justify-items: start; }
+.load-error p { margin: 0; }
+
+/* Part 12: use the same controlled-field styling as RSVP. */
+.event-search { margin: 0 0 28px; }
+.event-search input { width: 100%; }
+/* Keep focus visible after route and confirmation changes. */
+[tabindex="-1"]:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 5px; }

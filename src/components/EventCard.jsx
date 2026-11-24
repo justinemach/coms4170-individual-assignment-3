@@ -1,5 +1,4 @@
-// Part 7: the overlay link is a React Router Link to this event's own page.
-// Link changes the address without reloading the page.
+// Part 8: the pill knows three statuses. Invited, Going and Declined.
 
 import { Link } from "react-router-dom";
 
@@ -7,8 +6,9 @@ export default function EventCard(props) {
   // Pull each prop out of the props object so the JSX below can use short names.
   const { id, title, host, hostAvatar, location, time, dateTime, image, imageAlt, status, attendees, goingCount, onStatusChange } = props;
 
-  // One class for Invited, two for Going. The styles.css rule for .is-going turns the pill green.
-  const statusClass = status === "Going" ? "invitation-status is-going" : status === "Declined" ? "invitation-status is-declined" : "invitation-status";
+  // Invited is the plain pill. Going and Declined each add a class that styles.css colors.
+  const statusClass =
+    status === "Going" ? "invitation-status is-going" : status === "Declined" ? "invitation-status is-declined" : "invitation-status";
 
   // Clicking the pill asks App to change this event's status. The card does not change itself.
   function handleStatusClick() {

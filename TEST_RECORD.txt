@@ -1,0 +1,38 @@
+VERIFICATION RECORD - CODEX-PERFORMED, 24 NOVEMBER 2026
+
+Environment: local Vite app, ChatGPT in-app browser. Test data was fictional.
+
+Observed in browser:
+- Part 8: Going, Invited, Declined groups; the initial Declined group showed a useful empty message. Declining Friday Night Social moved it into Declined.
+- Fresh data: three upcoming cards and Orientation Mixer under Past.
+- Studio Night: Invited +42 -> Going +43 -> Invited +42. Second toggle used Space. Other cards retained their values.
+- Forum: Going +318 -> Invited +317 -> Going +318.
+- Friday: Invited -> Declined retained +88; its Declined pill -> Going showed +89.
+- Search f: two cards; fr: one; FRIDAY: one; zzz: zero with query-specific feedback; clear: three. Past plus mixer: Orientation Mixer only.
+- Keyboard Enter on an event link opened details; focus moved to its heading.
+- Initial form showed selected. Empty submission showed name and email messages plus summary, kept Guests valid, and focused rsvp-name. aria-invalid and aria-describedby were inspected.
+- Valid fields with ada@fail.test showed Sending and disabled controls, then failed feedback. Name, two guests, and note were preserved; focus moved to rsvp-summary.
+- Changing the email to ada@example.test and pressing Enter on Try again led to confirmation, focused confirmation, and updated live-region text.
+- Closing details with Enter returned focus to the original Studio Night link. Studio showed Going +43; Forum and Friday retained their own states/counts.
+- Declining Friday focused its confirmation. My Events then showed Studio and Forum under Going, an empty Invited group, and Friday under Declined.
+- /events/nope first showed Loading, then a not-found message with Back to Events.
+- SIMULATE_FAILURE=true showed the load error and Try again. Retry re-entered Loading. Restoring false caused Vite to reload and restored the cards; successful recovery by clicking Try again after removing the flag was not independently observed.
+- SIMULATE_EMPTY=true showed No events yet. Both simulation flags were restored to false.
+- The console inspection at the loaded Events page returned no warnings/errors.
+
+Build: production build passed. Final packaging build is recorded separately by the command output.
+
+NOT YET VERIFIED:
+- Explicit narrow/wide viewport measurements and visual review of final layouts.
+- Spoken output from an actual screen reader.
+- Public project link and logged-out accessibility.
+- Full editor-and-preview Part 8 capture (the local browser checkpoint was saved).
+- Student repetition of tests, independent Part 12 implementation, and student-authored note.
+
+Source changes beyond supplied Part 11:
+- Counts use Number(newStatus === Going) minus Number(oldStatus === Going), with immutable functional state updates.
+- Search is controlled in App and combined with timeframe filtering.
+- Closing details returns focus to its event card; Events/My Events focus headings on navigation.
+- Decline and change-response transitions deliberately move focus.
+- Details data errors show recovery guidance instead of Not Found.
+- Removed logging of personal RSVP form values.

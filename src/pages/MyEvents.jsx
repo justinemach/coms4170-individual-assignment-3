@@ -1,25 +1,40 @@
+// Part 8: My Events. One page, built from the same events state as the Events page.
+// Three groups by status. A group with nothing in it says so instead of showing nothing.
+
+import { useEffect, useRef } from "react";
 import EventList from "../components/EventList.jsx";
 
-export default function MyEvents({ events, onStatusChange }) {
-  // Each group is derived from App's shared events, never stored separately.
-  const statuses = ["Going", "Invited", "Declined"];
+export default function MyEvents(props) {
+  const { events, onStatusChange, loadState } = props;
+
+  const headingRef = useRef(null);
+  useEffect(() => { headingRef.current?.focus(); }, []);
+
+  // Three lists worked out from the one shared list. Not state: it follows events automatically.
+  const groups = [
+    { status: "Going", events: events.filter((event) => event.status === "Going") },
+    { status: "Invited", events: events.filter((event) => event.status === "Invited") },
+    { status: "Declined", events: events.filter((event) => event.status === "Declined") },
+  ];
+
   return (
     <main id="events-main" className="events-main">
-      <div className="events-title-row"><h1>My Events</h1></div>
-      {statuses.map((status) => {
-        const matchingEvents = events.filter((event) => event.status === status);
-        const groupId = "group-" + status.toLowerCase();
-        return (
-          <section className="my-events-group" key={status} aria-labelledby={groupId}>
-            <h2 id={groupId}>{status}</h2>
-            {matchingEvents.length === 0 ? (
-              <p className="empty-state">Nothing here yet. Events you mark as {status.toLowerCase()} will show up here.</p>
-            ) : (
-              <EventList events={matchingEvents} view={status.toLowerCase()} onStatusChange={onStatusChange} />
-            )}
-          </section>
-        );
-      })}
+      <div className="events-title-row">
+        <h1 ref={headingRef} tabIndex={-1}>My Events</h1>
+      </div>
+
+      {loadState === "loading" && <p className="load-state" role="status">Loading…</p>}
+      {loadState === "error" && <p className="load-error">We couldn’t load your events. Go back to Events and try again.</p>}
+      {(loadState === "ready" || loadState === "empty") && groups.map((group) => (
+        <section className="my-events-group" key={group.status} aria-labelledby={"group-" + group.status.toLowerCase()}>
+          <h2 id={"group-" + group.status.toLowerCase()}>{group.status}</h2>
+          {group.events.length === 0 ? (
+            <p className="empty-state">Nothing here yet. Events you mark as {group.status.toLowerCase()} will show up here.</p>
+          ) : (
+            <EventList events={group.events} view={group.status.toLowerCase()} onStatusChange={onStatusChange} />
+          )}
+        </section>
+      ))}
     </main>
   );
 }

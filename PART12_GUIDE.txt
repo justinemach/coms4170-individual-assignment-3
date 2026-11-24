@@ -1,0 +1,20 @@
+PART 12 - WORK THROUGH BEFORE SUBMITTING
+
+The existing implementation is an AI-written draft, not evidence of independent student work. The assignment requires your own code and a three-line note. Use the instructor hints and your own reasoning to complete that requirement.
+
+1. Count: Which transitions enter Going, which leave it, and which do neither? Explain why Going -> Going must change the count by zero. Explain why map and object spread preserve the other records and the stable id.
+2. Search: Where is query state stored? How do value and onChange make the field controlled? Why is matchesSearch combined with the timeframe condition using &&?
+3. Empty state: Why should a no-match message be shown only after data is ready? How is no match different from an empty dataset or a load failure?
+
+Repeat the assignment's tests using your own implementation:
+- Studio +42 -> +43 -> +42; Forum +318 -> +317 -> +318.
+- Decline Friday while Invited: +88. Change Declined to Going: +89.
+- f -> two cards; fr -> one; zzz -> useful message containing zzz; clear -> three.
+- Past plus mixer -> Orientation Mixer.
+
+Write your own three lines after testing:
+Tried: [the concrete actions you performed]
+Saw: [the actual results you observed]
+Fixed: [one real issue you corrected and why the correction works]
+
+Do not claim a test, correction, or independent implementation you did not perform.

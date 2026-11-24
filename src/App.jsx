@@ -1,4 +1,6 @@
-// Part 7 finished.
+// Course Part 11 foundation, plus an AI-assisted Part 12 draft for student review.
+// New in Part 11: the events are loaded, not imported. While they load, the page says so.
+// If loading fails, the page says so and offers Try again.
 // App owns the state and the header. Routes picks a page from the address:
 // / is Events, /events/:id is one event, /my-events is My Events, anything else is Not Found.
 
@@ -7,24 +9,58 @@ import EventsPage from "./pages/EventsPage.jsx";
 import EventDetails from "./pages/EventDetails.jsx";
 import MyEvents from "./pages/MyEvents.jsx";
 import NotFound from "./pages/NotFound.jsx";
-import { useState } from "react";
-import { events as startingEvents } from "./data/events.js";
+import { useEffect, useState } from "react";
+import { loadEvents } from "./data/loadEvents.js";
+
+// Part 12 draft: a pure predicate keeps search separate from rendering.
+export function matchesSearch(event, query) {
+  return event.title.toLowerCase().includes(query.trim().toLowerCase());
+}
 
 export default function App() {
-  // The working copy of the events. Changing it redraws every component that shows it.
-  const [events, setEvents] = useState(startingEvents);
+  // The events start empty and arrive from loadEvents(). loadState says where we are:
+  // "loading" | "ready" | "empty" | "error"
+  const [events, setEvents] = useState([]);
+  const [loadState, setLoadState] = useState("loading");
+
+  // Ask for the events. Called once when the page first draws, and again on Try again.
+  async function load() {
+    setLoadState("loading");
+    try {
+      const data = await loadEvents();
+      setEvents(data);
+      setLoadState(data.length === 0 ? "empty" : "ready");
+    } catch (error) {
+      setLoadState("error");
+    }
+  }
+
+  // useEffect runs its function after the render. The empty [] means: only after the first one.
+  // Loading data is a side effect; it does not belong inside the render itself.
+  useEffect(() => {
+    load();
+  }, []);
   const [view, setView] = useState("upcoming");
+  const [query, setQuery] = useState("");
+  const [announcement, setAnnouncement] = useState("");
 
   // Copy, then set. A new array, with a new object for the one event that changed.
   // The original array and object are never edited. The id never changes.
   function handleStatusChange(id, newStatus) {
-    const nextEvents = events.map((event) => {
-      if (event.id === id) {
-        return { ...event, status: newStatus };
-      }
-      return event;
-    });
-    setEvents(nextEvents);
+    setEvents((currentEvents) => currentEvents.map((event) => {
+      if (event.id !== id) return event;
+      // Only crossing into or out of Going changes the attendee count.
+      const wasGoing = event.status === "Going";
+      const willBeGoing = newStatus === "Going";
+      const countChange = Number(willBeGoing) - Number(wasGoing);
+      return { ...event, status: newStatus, goingCount: event.goingCount + countChange };
+    }));
+
+    // Say what just happened, in words. The live region below reads this out.
+    const changed = events.find((event) => event.id === id);
+    const words = { Going: "you are going.", Declined: "you declined.", Invited: "back to invited." };
+    if (!changed) return;
+    setAnnouncement(changed.title + ": " + (words[newStatus] ?? newStatus));
   }
 
   // NavLink calls this with isActive, so the current page's link gets the is-current style from Class 2.
@@ -33,11 +69,18 @@ export default function App() {
   }
 
   // Only the events for the selected view are handed to the Events page.
-  const shownEvents = events.filter((event) => (view === "past" ? event.isPast : !event.isPast));
+  const shownEvents = events.filter((event) =>
+    (view === "past" ? event.isPast : !event.isPast) && matchesSearch(event, query)
+  );
 
   return (
     <>
       <a className="skip-link" href="#events-main">Skip to main content</a>
+
+      {/* The live region. role="status" means: announce changes here, without interrupting. */}
+      <p className="status-announcement" role="status" aria-live="polite">
+        {announcement}
+      </p>
 
       <header className="events-site-header">
         <Link className="events-home-mark" to="/" aria-label="Events home">
@@ -71,9 +114,9 @@ export default function App() {
       </header>
 
       <Routes>
-        <Route path="/" element={<EventsPage events={shownEvents} view={view} onViewChange={setView} onStatusChange={handleStatusChange} />} />
-        <Route path="/events/:id" element={<EventDetails events={events} onStatusChange={handleStatusChange} />} />
-        <Route path="/my-events" element={<MyEvents events={events} onStatusChange={handleStatusChange} />} />
+        <Route path="/" element={<EventsPage events={shownEvents} view={view} onViewChange={setView} onStatusChange={handleStatusChange} loadState={loadState} onRetry={load} query={query} onQueryChange={setQuery} />} />
+        <Route path="/events/:id" element={<EventDetails events={events} onStatusChange={handleStatusChange} loadState={loadState} />} />
+        <Route path="/my-events" element={<MyEvents events={events} onStatusChange={handleStatusChange} loadState={loadState} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
