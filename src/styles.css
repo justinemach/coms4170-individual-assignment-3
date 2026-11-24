@@ -1856,3 +1856,23 @@ h1:focus-visible, .rsvp-card:focus-visible, .form-error:focus-visible { outline:
 .event-search input { width: 100%; }
 /* Keep focus visible after route and confirmation changes. */
 [tabindex="-1"]:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 5px; }
+
+/* Final responsive review: readable metadata and complete host names. */
+.timeline-event-copy > time,
+.event-host,
+.event-place,
+.event-day-label p,
+.events-account-nav time { color: var(--secondary); }
+.timeline-event-card { height: auto; min-height: 178px; }
+.event-host,
+.event-place { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+.host-avatar,
+.event-place img { flex-shrink: 0; }
+@media (max-width: 480px) {
+  .timeline-event-card { min-height: 188px; }
+}
+.field .hint,
+.form-state,
+.event-view-switcher button:not(.is-selected),
+.events-nav-link:not(.is-current),
+.events-account-nav { color: var(--secondary); }

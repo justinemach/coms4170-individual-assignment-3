@@ -22,12 +22,16 @@ Observed in browser:
 
 Build: production build passed. Final packaging build is recorded separately by the command output.
 
-NOT YET VERIFIED:
-- Explicit narrow/wide viewport measurements and visual review of final layouts.
-- Spoken output from an actual screen reader.
-- Public project link and logged-out accessibility.
-- Full editor-and-preview Part 8 capture (the local browser checkpoint was saved).
-- Student repetition of tests, independent Part 12 implementation, and student-authored note.
+FINAL CHECKS ON RESUMPTION:
+- Events widths 320, 390, 720, 1280: document scroll width equaled viewport width; cards did not overflow their height; event images remained square.
+- At 320 px the RSVP fields and both buttons fit. An empty submit showed readable errors and a visible focus ring on Name. My Events also fit without horizontal scrolling.
+- Fixed faint metadata/hints/inactive navigation by using the supplied secondary text color. Long host names wrap; event-card height can grow instead of clipping.
+- Captured a complete VS Code editor and live preview of the preserved Part 8 checkpoint. This supplementary image was captured later; the original browser-only image was captured before Parts 9-11.
+- Scripted checks exercise actual exported validation/search functions: whitespace/empty fields, missing @, guest values outside 0-3, valid guests 0-3, case-insensitive and whitespace-trimmed searches, stable IDs, and restored load flags.
+
+LIMITATIONS:
+- Spoken output from an actual screen reader was not independently verified.
+- No student repetition of tests or independent Part 12 authorship is claimed.
 
 Source changes beyond supplied Part 11:
 - Counts use Number(newStatus === Going) minus Number(oldStatus === Going), with immutable functional state updates.

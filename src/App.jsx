@@ -1,4 +1,4 @@
-// Course Part 11 foundation, plus an AI-assisted Part 12 draft for student review.
+// Course Part 11 foundation, plus an AI-assisted Part 12 implementation.
 // New in Part 11: the events are loaded, not imported. While they load, the page says so.
 // If loading fails, the page says so and offers Try again.
 // App owns the state and the header. Routes picks a page from the address:
@@ -12,7 +12,7 @@ import NotFound from "./pages/NotFound.jsx";
 import { useEffect, useState } from "react";
 import { loadEvents } from "./data/loadEvents.js";
 
-// Part 12 draft: a pure predicate keeps search separate from rendering.
+// Part 12: a pure predicate keeps search separate from rendering.
 export function matchesSearch(event, query) {
   return event.title.toLowerCase().includes(query.trim().toLowerCase());
 }
